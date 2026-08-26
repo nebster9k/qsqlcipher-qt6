@@ -1,7 +1,19 @@
 cmake_minimum_required(VERSION 3.20)
 project(QSqlCipher)
-message(STATUS "Building QSqlCipher plugin for Qt (SqlCipher version 4.12.0 based on SQLite 3.51.1, libtomcrypt version 1.18.2)")
-find_package(Qt6 REQUIRED COMPONENTS Core SqlPrivate BuildInternals)
+message(STATUS "Building QSqlCipher plugin for Qt (SqlCipher version 4.18.0 based on SQLite 3.53.4, libtomcrypt version 1.18.2)")
+find_package(Qt6 REQUIRED COMPONENTS Core Sql BuildInternals)
+
+# Depending on the Qt installation layout, the Qt6::SqlPrivate target is either
+# defined by Qt6SqlTargets.cmake (pulled in by the Sql component above) or
+# provided by a separate Qt6SqlPrivate package.
+if(NOT TARGET Qt6::SqlPrivate)
+    find_package(Qt6 REQUIRED COMPONENTS SqlPrivate)
+endif()
+
+if(NOT TARGET Qt6::SqlPrivate)
+    message(FATAL_ERROR "Qt6::SqlPrivate target not found")
+endif()
+
 qt_standard_project_setup()
 qt_prepare_standalone_project()
 set(CMAKE_AUTOMOC ON)
